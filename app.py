@@ -1,5 +1,6 @@
 import os
 import psycopg2
+import random
 
 from flask import Flask, request, abort
 
@@ -37,16 +38,32 @@ def show_all():
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     cursor = conn.cursor()
 
-    table_columns = '(name, type)'
     postgres_select_query = f"""SELECT * FROM food"""
 
     cursor.execute(postgres_select_query)
 
     record = cursor.fetchall()
-    message = "餐廳, 類型"
-
     for r in record:
-        message+= f'{r[0]}, {r[1]}\n'
+        message+= f'{r[0]}: {r[1]}\n'
+
+    cursor.close()
+    conn.close()
+
+    return message
+
+def random_select(type_name):
+    DATABASE_URL = os.environ['DATABASE_URL']
+    
+    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+    cursor = conn.cursor()
+
+    postgres_select_query = f"""SELECT * FROM food WHERE type = %s"""
+
+    cursor.execute(postgres_select_query, type_name)
+
+    record = cursor.fetchall()
+
+    message = f"吃... {random.choice(record)[0]}!"
 
     cursor.close()
     conn.close()
