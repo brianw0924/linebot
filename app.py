@@ -66,9 +66,6 @@ def handle_message(event):
     # if type_name not in ['早餐','午餐','晚餐','飲料','點心']:
     #     line_bot_api.reply_message(event.reply_token, TextSendMessage(text='請輸入:[餐廳名字] [空格] [類型(早餐,午餐,晚餐,飲料,點心)]')) # send back
     # else:
-    line_bot_api.reply_message(event.reply_token, TextSendMessage(text=insert_data(record)) # send back
-
-
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
