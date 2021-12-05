@@ -112,7 +112,7 @@ def handle_message(event):
     raw_msg = event.message.text
 
     if raw_msg == 'all':
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=show_all())) # send back
+        message = show_all()
     elif raw_msg == '晚吃神':
         message = random_select('晚餐')
     elif raw_msg == '午吃神':
@@ -126,7 +126,7 @@ def handle_message(event):
         else:
             message = insert_data(record_list)
 
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=message)) # send back
+    line_bot_api.reply_message(event.reply_token, TextSendMessage(text=message)) # send back
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
