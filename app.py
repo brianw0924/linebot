@@ -61,7 +61,7 @@ def insert_data(record):
     postgres_insert_query = f"""INSERT INTO food {table_columns} VALUES (%s,%s)"""
 
     cursor.execute(postgres_insert_query, record)
-    conn.cimmit()
+    conn.commit()
 
     message = f"成功存入餐廳: {record[0]} | 類型: {record[1]}"
 
