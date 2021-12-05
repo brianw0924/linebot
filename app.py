@@ -88,10 +88,12 @@ def handle_message(event):
     # message = TextSendMessage(text=event.message.text) # reply message
     # line_bot_api.reply_message(event.reply_token, message) # send back
 
+    raw_msg = event.message.text
+
     if raw_msg == 'all':
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text=show_all())) # send back
 
-    record_list = message_preprocess(event.message.text)
+    record_list = message_preprocess(raw_msg)
     if len(record_list) == 0:
         message = f"輸入格式為:\n存入\n餐廳名字1 類型\n餐廳名字2 類型\n...\n類型有:早餐、午餐、晚餐、飲料、點心"
     else:
