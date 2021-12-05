@@ -35,18 +35,43 @@ def callback():
 # 處理訊息
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    user_msg = event.message.text
-    if user_msg.split(" ")[0] == "add":
-        record.append(user_msg.split(" ")[1:])
-        message = TextSendMessage(text="Success!") # reply message
-        line_bot_api.reply_message(event.reply_token, message) # send back
-    if user_msg == "check":
-        for i in record:
-            message = TextSendMessage(text=i)
-            line_bot_api.reply_message(event.reply_token, message) # send back
+    # user_msg = event.message.text
+    # if user_msg.split(" ")[0] == "add":
+    #     record.append(user_msg.split(" ")[1:])
+    #     message = TextSendMessage(text="Success!") # reply message
+    #     line_bot_api.reply_message(event.reply_token, message) # send back
+    # if user_msg == "check":
+    #     for i in record:
+    #         message = TextSendMessage(text=i)
+    #         line_bot_api.reply_message(event.reply_token, message) # send back
+
+    buttons_template_message = TemplateSendMessage(
+        alt_text='Buttons template',
+        template=ButtonsTemplate(
+            thumbnail_image_url='https://example.com/image.jpg',
+            title='Menu',
+            text='Please select',
+            actions=[
+                PostbackAction(
+                    label='postback',
+                    display_text='postback text',
+                    data='action=buy&itemid=1'
+                ),
+                MessageAction(
+                    label='message',
+                    text='message text'
+                ),
+                URIAction(
+                    label='uri',
+                    uri='http://example.com/'
+                )
+            ]
+        )
+    )
+
 
     # message = TextSendMessage(text=event.message.text) # reply message
-    # line_bot_api.reply_message(event.reply_token, message) # send back
+    line_bot_api.reply_message(event.reply_token, buttons_template_message) # send back
 
 import os
 if __name__ == "__main__":
