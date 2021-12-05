@@ -55,17 +55,19 @@ def insert_data(record):
 # 處理訊息
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    # raw_msg = event.message.text
-    # food_name = raw_msg.split(' ')[0]
-    # type_name = raw_msg.split(' ')[1]
-    # record = (food_name, type_name)
-    # # if type_name not in ['早餐','午餐','晚餐','飲料','點心']:
-    # #     line_bot_api.reply_message(event.reply_token, TextSendMessage(text='請輸入:[餐廳名字] [空格] [類型(早餐,午餐,晚餐,飲料,點心)]')) # send back
-    # # else:
-    # line_bot_api.reply_message(event.reply_token, TextSendMessage(text=insert_data(record)) # send back
 
-    message = TextSendMessage(text=event.message.text) # reply message
-    line_bot_api.reply_message(event.reply_token, message) # send back
+    # message = TextSendMessage(text=event.message.text) # reply message
+    # line_bot_api.reply_message(event.reply_token, message) # send back
+
+    raw_msg = event.message.text
+    food_name = raw_msg.split(' ')[0]
+    type_name = raw_msg.split(' ')[1]
+    record = (food_name, type_name)
+    # if type_name not in ['早餐','午餐','晚餐','飲料','點心']:
+    #     line_bot_api.reply_message(event.reply_token, TextSendMessage(text='請輸入:[餐廳名字] [空格] [類型(早餐,午餐,晚餐,飲料,點心)]')) # send back
+    # else:
+    line_bot_api.reply_message(event.reply_token, TextSendMessage(text=insert_data(record)) # send back
+
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
