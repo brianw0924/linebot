@@ -61,7 +61,7 @@ def random_select(type_name):
 
     postgres_select_query = f"""SELECT * FROM food WHERE type = %s"""
 
-    cursor.execute(postgres_select_query, type_name)
+    cursor.execute(postgres_select_query, (type_name,))
 
     record = cursor.fetchall()
 
@@ -113,20 +113,20 @@ def handle_message(event):
 
     if raw_msg == 'all':
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text=show_all())) # send back
-    if raw_msg == '晚吃神':
+    elif raw_msg == '晚吃神':
         message = random_select('晚餐')
-    if raw_msg == '午吃神':
+    elif raw_msg == '午吃神':
         message = random_select('午餐')
-    if raw_msg == '早吃神':
+    elif raw_msg == '早吃神':
         message = random_select('早餐')
-
-    record_list = message_preprocess(raw_msg)
-    if len(record_list) == 0:
-        message = "輸入格式為:\n存入\n餐廳名字1 類型\n餐廳名字2 類型\n...\n類型有:早餐、午餐、晚餐、飲料、點心"
     else:
-        message = insert_data(record_list)
+        record_list = message_preprocess(raw_msg)
+        if len(record_list) == 0:
+            message = "輸入格式為:\n存入\n餐廳名字1 類型\n餐廳名字2 類型\n...\n類型有:早餐、午餐、晚餐、飲料、點心"
+        else:
+            message = insert_data(record_list)
 
-    line_bot_api.reply_message(event.reply_token, TextSendMessage(text=message)) # send back
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=message)) # send back
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
