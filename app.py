@@ -45,9 +45,28 @@ def show_all():
     message = ""
 
     record = cursor.fetchall()
-    for r in record:
+    for r in record[:-1]:
         message+= f'{r[0]}: {r[1]}\n'
+    message+=f'{record[-1][0]}: {record[-1][1]}'
 
+    cursor.close()
+    conn.close()
+
+    return message
+
+def clear_all():
+    DATABASE_URL = os.environ['DATABASE_URL']
+    
+    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+    cursor = conn.cursor()
+
+    postgres_delete_query = f"""DELETE FROM food"""
+
+    cursor.execute(postgres_delete_query)
+    conn.commit()
+    
+    message = "已刪除所有資料"
+    
     cursor.close()
     conn.close()
 
@@ -113,6 +132,8 @@ def handle_message(event):
 
     if raw_msg == 'all':
         message = show_all()
+    elif raw_msg == 'clear':
+        message = clear_all()
     elif raw_msg == '晚吃神':
         message = random_select('晚餐')
     elif raw_msg == '午吃神':
