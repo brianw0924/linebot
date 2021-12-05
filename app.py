@@ -51,8 +51,7 @@ def show_all():
 
     cursor.close()
     conn.close()
-
-    return message
+    return message if message else "沒有任何資料"
 
 def clear_all():
     DATABASE_URL = os.environ['DATABASE_URL']
@@ -84,12 +83,12 @@ def random_select(type_name):
 
     record = cursor.fetchall()
 
-    message = f"吃... {random.choice(record)[0]}!"
+    message = f"吃... {random.choice(record)[0]}!" if len(record) != 0 else ""
 
     cursor.close()
     conn.close()
 
-    return message
+    return message if message else f"沒有{type_name}資料..."
 
 def message_preprocess(text):
     text = text.split('\n')
