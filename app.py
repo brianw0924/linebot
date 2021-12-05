@@ -42,12 +42,14 @@ def show_all():
 
     cursor.execute(postgres_select_query)
 
-    record = str(cursor.fetchall())
+    record = cursor.fetchall()
+    message = "餐廳, 類型"
+
+    for r in record:
+        message+= f'{r[0]}, {r[1]}\n'
 
     cursor.close()
     conn.close()
-
-    message = record
 
     return message
 
@@ -73,7 +75,7 @@ def insert_data(record_list):
     cursor.executemany(postgres_insert_query, record_list)
     conn.commit()
     
-    message = f"成功存入餐廳 {cursor.rowcount} 筆資料"
+    message = f"成功存入 {cursor.rowcount} 筆資料"
     
     cursor.close()
     conn.close()
@@ -95,15 +97,12 @@ def handle_message(event):
 
     record_list = message_preprocess(raw_msg)
     if len(record_list) == 0:
-        message = f"輸入格式為:\n存入\n餐廳名字1 類型\n餐廳名字2 類型\n...\n類型有:早餐、午餐、晚餐、飲料、點心"
+        message = "輸入格式為:\n存入\n餐廳名字1 類型\n餐廳名字2 類型\n...\n類型有:早餐、午餐、晚餐、飲料、點心"
     else:
-        message = TextSendMessage(text=insert_data(record_list))
+        message = insert_data(record_list)
 
-    line_bot_api.reply_message(event.reply_token, message) # send back
+    line_bot_api.reply_message(event.reply_token, TextSendMessage(message)) # send back
 
-    # if type_name not in ['早餐','午餐','晚餐','飲料','點心']:
-    #     line_bot_api.reply_message(event.reply_token, TextSendMessage(text='請輸入:[餐廳名字] [空格] [類型(早餐,午餐,晚餐,飲料,點心)]')) # send back
-    # else:
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
