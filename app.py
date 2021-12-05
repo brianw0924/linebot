@@ -42,6 +42,8 @@ def show_all():
 
     cursor.execute(postgres_select_query)
 
+    message = ""
+
     record = cursor.fetchall()
     for r in record:
         message+= f'{r[0]}: {r[1]}\n'
