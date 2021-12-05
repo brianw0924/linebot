@@ -63,6 +63,9 @@ def handle_message(event):
     food_name = raw_msg.split(' ')[0]
     type_name = raw_msg.split(' ')[1]
     record = (food_name, type_name)
+    message = TextSendMessage(text=insert_data(record))
+    line_bot_api.reply_message(event.reply_token, message) # send back
+
     # if type_name not in ['早餐','午餐','晚餐','飲料','點心']:
     #     line_bot_api.reply_message(event.reply_token, TextSendMessage(text='請輸入:[餐廳名字] [空格] [類型(早餐,午餐,晚餐,飲料,點心)]')) # send back
     # else:
