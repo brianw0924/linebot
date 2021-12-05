@@ -38,11 +38,12 @@ def handle_message(event):
     user_msg = event.message.text
     if user_msg.split(" ")[0] == "add":
         record.append(user_msg.split(" ")[1:])
-        message = TextSendMessage(text=f"add {user_msg.split(" ")[1:]}") # reply message
+        message = TextSendMessage(text="Success!") # reply message
         line_bot_api.reply_message(event.reply_token, message) # send back
     if user_msg == "check":
         for i in record:
-            line_bot_api.reply_message(event.reply_token, TextSendMessage(text=i)) # send back
+            message = TextSendMessage(text=i)
+            line_bot_api.reply_message(event.reply_token, message) # send back
 
     # message = TextSendMessage(text=event.message.text) # reply message
     # line_bot_api.reply_message(event.reply_token, message) # send back
