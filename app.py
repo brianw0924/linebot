@@ -126,7 +126,7 @@ def handle_message(event):
     else:
         message = insert_data(record_list)
 
-    line_bot_api.reply_message(event.reply_token, TextSendMessage(message)) # send back
+    line_bot_api.reply_message(event.reply_token, TextSendMessage(text=message)) # send back
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
