@@ -51,7 +51,17 @@ def show_all():
 
     return message
 
-def insert_data(record):
+def message_preprocess(text):
+    text = text.split('\n')
+    if text[0] != '存入': return []
+    record_list = []
+    for line in text[1:]:
+        record = (line.split(' ')[0], line.split(' ')[1])
+        record_list.append(record)
+
+    return record_list
+
+def insert_data(record_list):
     DATABASE_URL = os.environ['DATABASE_URL']
     
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
@@ -60,13 +70,11 @@ def insert_data(record):
     table_columns = '(name, type)'
     postgres_insert_query = f"""INSERT INTO food {table_columns} VALUES (%s,%s)"""
 
-    cursor.execute(postgres_insert_query, record)
+    cursor.executemany(postgres_insert_query, record_list)
     conn.commit()
-
-    message = f"成功存入餐廳: {record[0]} | 類型: {record[1]}"
-
-    print(message)
-
+    
+    message = f"成功存入餐廳 {cursor.rowcount} 筆資料"
+    
     cursor.close()
     conn.close()
 
@@ -76,19 +84,20 @@ def insert_data(record):
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
 
+    # ''' Copy user message and reply'''
     # message = TextSendMessage(text=event.message.text) # reply message
     # line_bot_api.reply_message(event.reply_token, message) # send back
 
-    raw_msg = event.message.text
-
     if raw_msg == 'all':
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text=show_all())) # send back
+
+    record_list = message_preprocess(event.message.text)
+    if len(record_list) == 0:
+        message = f"輸入格式為:\n存入\n餐廳名字1 類型\n餐廳名字2 類型\n...\n類型有:早餐、午餐、晚餐、飲料、點心"
     else:
-        food_name = raw_msg.split(' ')[0]
-        type_name = raw_msg.split(' ')[1]
-        record = (food_name, type_name)
-        message = TextSendMessage(text=insert_data(record))
-        line_bot_api.reply_message(event.reply_token, message) # send back
+        message = TextSendMessage(text=insert_data(record_list))
+
+    line_bot_api.reply_message(event.reply_token, message) # send back
 
     # if type_name not in ['早餐','午餐','晚餐','飲料','點心']:
     #     line_bot_api.reply_message(event.reply_token, TextSendMessage(text='請輸入:[餐廳名字] [空格] [類型(早餐,午餐,晚餐,飲料,點心)]')) # send back
