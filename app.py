@@ -10,6 +10,8 @@ from linebot.models import *
 
 app = Flask(__name__)
 
+record = []
+
 # Channel Access Token
 line_bot_api = LineBotApi('GVsFuyUq3UEeHkusIBwb0AdQ64oBz4McNa4ZmMmVadrJyRA9Ti3UneuVpNSzjVLbUjwUxZRt6U51/jggniO65EXYPKlB4LemaAuaAqlUNke9JCVNhK5M7w8nhJZwI1e88VMftcrj1hxCi/H1J5XNzgdB04t89/1O/w1cDnyilFU=')
 # Channel Secret
@@ -33,9 +35,15 @@ def callback():
 # 處理訊息
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    # message = TextSendMessage(text="Test") # reply message
-    message = TextSendMessage(text=event.message.text) # reply message
-    line_bot_api.reply_message(event.reply_token, message) # send back
+    user_msg = event.message.text
+    if user_msg.split(" ")[0] == "add":
+        record.append(user_msg.split(" ")[1:])
+    if user_msg == "check":
+        for i in record:
+            line_bot_api.reply_message(event.reply_token, i) # send back
+
+    # message = TextSendMessage(text=event.message.text) # reply message
+    # line_bot_api.reply_message(event.reply_token, message) # send back
 
 import os
 if __name__ == "__main__":
