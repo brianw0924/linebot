@@ -113,6 +113,12 @@ def handle_message(event):
 
     if raw_msg == 'all':
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text=show_all())) # send back
+    if raw_msg == '晚吃神':
+        message = random_select('晚餐')
+    if raw_msg == '午吃神':
+        message = random_select('午餐')
+    if raw_msg == '早吃神':
+        message = random_select('早餐')
 
     record_list = message_preprocess(raw_msg)
     if len(record_list) == 0:
